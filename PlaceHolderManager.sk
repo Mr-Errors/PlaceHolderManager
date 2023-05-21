@@ -1,0 +1,297 @@
+#██████╗░██╗░░░░░░█████╗░░█████╗░███████╗██╗░░██╗░█████╗░██╗░░░░░██████╗░███████╗██████╗░███╗░░░███╗░█████╗░███╗░░██╗░█████╗░░██████╗░
+#██╔══██╗██║░░░░░██╔══██╗██╔══██╗██╔════╝██║░░██║██╔══██╗██║░░░░░██╔══██╗██╔════╝██╔══██╗████╗░████║██╔══██╗████╗░██║██╔══██╗██╔════╝░
+#██████╔╝██║░░░░░███████║██║░░╚═╝█████╗░░███████║██║░░██║██║░░░░░██║░░██║█████╗░░██████╔╝██╔████╔██║███████║██╔██╗██║███████║██║░░██╗░
+#██╔═══╝░██║░░░░░██╔══██║██║░░██╗██╔══╝░░██╔══██║██║░░██║██║░░░░░██║░░██║██╔══╝░░██╔══██╗██║╚██╔╝██║██╔══██║██║╚████║██╔══██║██║░░╚██╗
+#██║░░░░░███████╗██║░░██║╚█████╔╝███████╗██║░░██║╚█████╔╝███████╗██████╔╝███████╗██║░░██║██║░╚═╝░██║██║░░██║██║░╚███║██║░░██║╚██████╔╝
+#╚═╝░░░░░╚══════╝╚═╝░░╚═╝░╚════╝░╚══════╝╚═╝░░╚═╝░╚════╝░╚══════╝╚═════╝░╚══════╝╚═╝░░╚═╝╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝░╚═════╝░
+#|================================================|#
+#|					INFORMATION					  |#
+#|================================================|#
+# Script Author: 
+# - MrErrors
+#
+# Discord: 
+# - LostPanda#7778
+#
+# Script Version: 
+# - 1.0.1
+#|================================================|#
+#|					OPTIONS					      |#
+#|================================================|#
+#----------------------------------------------
+#THIS IS THE MAIN COMMAND FOR THIS SKRIPT!!!!!
+OPTIONS:
+    Main-Command: /phm
+    Aliases: /PlaceHolderManager, /placeholderm, /placehm, /phmanager
+#-------------------------------------------------------#
+#██╗███╗░░░███╗██████╗░░█████╗░██████╗░████████╗░██████╗#
+#██║████╗░████║██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██╔════╝#
+#██║██╔████╔██║██████╔╝██║░░██║██████╔╝░░░██║░░░╚█████╗░#
+#██║██║╚██╔╝██║██╔═══╝░██║░░██║██╔══██╗░░░██║░░░░╚═══██╗#
+#██║██║░╚═╝░██║██║░░░░░╚█████╔╝██║░░██║░░░██║░░░██████╔╝#
+#╚═╝╚═╝░░░░░╚═╝╚═╝░░░░░░╚════╝░╚═╝░░╚═╝░░░╚═╝░░░╚═════╝░#
+#-------------------------------------------------------#
+import:
+    java.lang.Long
+    java.io.File
+    java.io.FileOutputStream
+    java.net.URL
+    java.nio.channels.Channels
+    java.util.ArrayList
+    java.util.List
+    java.util.Set
+    org.bukkit.Bukkit
+    org.bukkit.configuration.file.FileConfiguration
+    org.bukkit.configuration.file.YamlConfiguration
+    org.bukkit.configuration.MemorySection
+
+#---------------------------------------------------------#
+#██████╗░███████╗███████╗██╗░░░░░███████╗░█████╗░████████╗#
+#██╔══██╗██╔════╝██╔════╝██║░░░░░██╔════╝██╔══██╗╚══██╔══╝#
+#██████╔╝█████╗░░█████╗░░██║░░░░░█████╗░░██║░░╚═╝░░░██║░░░#
+#██╔══██╗██╔══╝░░██╔══╝░░██║░░░░░██╔══╝░░██║░░██╗░░░██║░░░#
+#██║░░██║███████╗██║░░░░░███████╗███████╗╚█████╔╝░░░██║░░░#
+#╚═╝░░╚═╝╚══════╝╚═╝░░░░░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░#
+#---------------------------------------------------------#
+condition plugin %string% exists:
+    check:
+        if Bukkit.getPluginManager().getPlugin(expression-1) is set:
+            continue
+
+condition plugin %string% is (1¦enabled|2¦exists):
+    check:
+        if Bukkit.getPluginManager().isPluginEnabled(expression-1):
+            if parse mark is 1:
+                continue
+        else:
+            if parse mark is 2:
+                continue 
+
+effect download file from %string% and store it inside %string%:
+  trigger:
+    create section with arguments variables {_link}, {_file} stored in {_section}:
+      set {_url} to new URL({_link})
+      set {_file} to new File({_file})
+
+      # create the path if it doesn't exist for some reason
+      {_file}.getParentFile().mkdirs()
+      {_file}.createNewFile()
+      
+      # download the file
+      set {_readableByteChannel} to Channels.newChannel({_url}.openStream())
+      set {_fileOutputStream} to new FileOutputStream({_file}) 
+      set {_fileChannel} to {_fileOutputStream}.getChannel()
+      {_fileChannel}.transferFrom({_readableByteChannel}, 0, Long.MAX_VALUE)
+
+    run section {_section} async with arguments expr-1, expr-2 and wait
+
+expression [get] all yaml nodes %string% from %string% [:with keys] [to %sender%]:
+    return type: objects
+    get:
+        set {_sender} to expr-3
+        set {_getKeys} to true if parser tags contains "with keys", else false
+        expr-2 is set:
+            set {_file} to try new File(expr-2)
+            if {_file}.exists():
+                set {_con} to YamlConfiguration.loadConfiguration({_file})
+                if expr-1 is set:
+                    set {_node} to expr-1
+                    if {_con}.contains({_node}):
+                        return ...{_con}.getConfigurationSection({_node}).getKeys({_getKeys})
+            else:
+                send "The %expr-2% doesn't exist" to {_sender}
+        if last java exception is set:
+            send "&c%last java exception%" to {_sender}
+
+
+#-----------------------------------------------------------------------#
+#███████╗██╗░░░██╗███╗░░██╗░█████╗░████████╗██╗░█████╗░███╗░░██╗░██████╗#
+#██╔════╝██║░░░██║████╗░██║██╔══██╗╚══██╔══╝██║██╔══██╗████╗░██║██╔════╝#
+#█████╗░░██║░░░██║██╔██╗██║██║░░╚═╝░░░██║░░░██║██║░░██║██╔██╗██║╚█████╗░#
+#██╔══╝░░██║░░░██║██║╚████║██║░░██╗░░░██║░░░██║██║░░██║██║╚████║░╚═══██╗#
+#██║░░░░░╚██████╔╝██║░╚███║╚█████╔╝░░░██║░░░██║╚█████╔╝██║░╚███║██████╔╝#
+#╚═╝░░░░░░╚═════╝░╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚══╝╚═════╝░#
+#-----------------------------------------------------------------------#
+function Join_FirstJoin(p: Player):
+    set {_uuid} to {_p}'s uuid
+    load yaml "plugins/PlaceHolderManager/PlayerData/%{_uuid}%.yml" as "plugins/PlaceHolderManager/PlayerData/%{_uuid}%.yml"
+    loop {-PlayerHoldersManager::*}:
+        set {_amount} to yaml value "Starting-Players-Currency.%loop-value%" from "plugins/PlaceHolderManager/Config.yml"
+        set yaml value "Player.Username" from "plugins/PlaceHolderManager/PlayerData/%{_uuid}%.yml" to "%{_p}%" if yaml value "Player.Username" from "plugins/PlaceHolderManager/Config.yml" is not set
+        set yaml value "PlaceHolders.%loop-value%" from "plugins/PlaceHolderManager/PlayerData/%{_uuid}%.yml" to {_amount} if yaml value "PlaceHolders.%loop-value%" from "plugins/PlaceHolderManager/Config.yml" is not set
+        save yaml "plugins/PlaceHolderManager/PlayerData/%{_uuid}%.yml"
+        wait 1 tick
+    message "<##44E0A2> &l● PlaceHolderManager &8&l➤ &7Creating <##44E0A2>%{_uuid}%.yml &7playerdata file!" to console
+
+
+
+#-----------------------------------------------#
+#░█████╗░███╗░░██╗  ░░░░░██╗░█████╗░██╗███╗░░██╗#
+#██╔══██╗████╗░██║  ░░░░░██║██╔══██╗██║████╗░██║#
+#██║░░██║██╔██╗██║  ░░░░░██║██║░░██║██║██╔██╗██║#
+#██║░░██║██║╚████║  ██╗░░██║██║░░██║██║██║╚████║#
+#╚█████╔╝██║░╚███║  ╚█████╔╝╚█████╔╝██║██║░╚███║#
+#░╚════╝░╚═╝░░╚══╝  ░╚════╝░░╚════╝░╚═╝╚═╝░░╚══╝#
+#-----------------------------------------------#
+on join:
+    Join_FirstJoin(player)
+
+
+on quit:
+    set {_uuid} to player's uuid
+    save yaml "plugins/PlaceHolderManager/PlayerData/%{_uuid}%.yml"
+    unload yaml "plugins/PlaceHolderManager/PlayerData/%{_uuid}%.yml"
+
+#-----------------------------------------------------------------------#
+#░█████╗░░█████╗░███╗░░░███╗███╗░░░███╗░█████╗░███╗░░██╗██████╗░░██████╗#
+#██╔══██╗██╔══██╗████╗░████║████╗░████║██╔══██╗████╗░██║██╔══██╗██╔════╝#
+#██║░░╚═╝██║░░██║██╔████╔██║██╔████╔██║███████║██╔██╗██║██║░░██║╚█████╗░#
+#██║░░██╗██║░░██║██║╚██╔╝██║██║╚██╔╝██║██╔══██║██║╚████║██║░░██║░╚═══██╗#
+#╚█████╔╝╚█████╔╝██║░╚═╝░██║██║░╚═╝░██║██║░░██║██║░╚███║██████╔╝██████╔╝#
+#░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═════╝░╚═════╝░#
+#-----------------------------------------------------------------------#
+command {@Main-Command} [<string>] [<offline player>] [<string>] [<number>]:
+    aliases: {@Aliases}
+    permission: placeholdermanager.admin
+    permission message: &c! You do not have permission for this command.
+    trigger:
+        #█░█ █▀▀ █░░ █▀█
+        #█▀█ ██▄ █▄▄ █▀▀
+        if arg-1 isn't set:
+            send "&8&m+------------------<##44E0A2>&l✦✦✦&8&m------------------+" to player
+            send "" to player
+            send "<##44E0A2>{@Main-Command} add <Player> <Placeholder> <Amount> &8&l⤜ &fThis will allow you to add to player's account" to player
+            send "" to player
+            send "<##44E0A2>{@Main-Command} remove <Player> <Placeholder> <Amount> &8&l⤜ &fThis will allow you to remove to player's account." to player
+            send "" to player
+            send "<##44E0A2>{@Main-Command} set <Player> <Placeholder> <Amount> &8&l⤜ &fThis will allow you to remove to player's account." to player
+            send "" to player
+            send "<##44E0A2>{@Main-Command} reload &8&l⤜ &fThis will allow reload the PlaceHolderManager Skript." to player
+            send "" to player
+            send "&8&m+------------------<##44E0A2>&l✦✦✦&8&m------------------+" to player
+        if arg-1 is "set":
+            set {_2} to arg-2
+            if {_2} is a player:
+                if arg-3 is set:
+                    set {_4} to arg-4
+                    if {_4} is a number:
+                        set {_u} to arg-2's uuid
+                        set {_n} to yaml value "PlaceHolders.%arg-3%" of "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml"
+                        set {_n} to arg-4
+                        set yaml value "PlaceHolders.%arg-3%" of "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml" to {_n}
+                        wait 1 tick
+                        save yaml "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml"
+                        set {_pre} to coloured "%{-Prefix}%"
+                        send "%{_pre}% <##44E0A2>%arg-4% &fhas been added to your account." to arg-2
+                    else:
+                        send "&c! Please add a number you wish to add to the player." to player
+            else:
+                send "&c! Please add a player you wish to send too." to player
+
+        #▄▀█ █▀▄ █▀▄
+        #█▀█ █▄▀ █▄▀
+        if arg-1 is "add" or "Add":
+            set {_2} to arg-2
+            if {_2} is a player:
+                if arg-3 is set:
+                    set {_4} to arg-4
+                    if {_4} is a number:
+                        set {_u} to arg-2's uuid
+                        set {_n} to yaml value "PlaceHolders.%arg-3%" of "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml"
+                        add arg-4 to {_n}
+                        set yaml value "PlaceHolders.%arg-3%" of "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml" to {_n}
+                        wait 1 tick
+                        save yaml "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml"
+                        set {_pre} to coloured "%{-Prefix}%"
+                        send "%{_pre}% <##44E0A2>%arg-4% &fhas been added to your account." to arg-2
+                    else:
+                        send "&c! Please add a number you wish to add to the player." to player
+            else:
+                send "&c! Please add a player you wish to send too." to player
+
+        
+       #█▀█ █▀▀ █▀▄▀█ █▀█ █░█ █▀▀
+       #█▀▄ ██▄ █░▀░█ █▄█ ▀▄▀ ██▄
+        if arg-1 is "remove" or "Remove":
+            set {_2} to arg-2
+            if {_2} is a player:
+                if arg-3 is set:
+                    set {_4} to arg-4
+                    if {_4} is a number:
+                        set {_u} to arg-2's uuid
+                        set {_n} to yaml value "PlaceHolders.%arg-3%" of "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml"
+                        remove arg-4 from {_n}
+                        set yaml value "PlaceHolders.%arg-3%" of "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml" to {_n}
+                        wait 1 tick
+                        save yaml "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml"
+                        set {_pre} to coloured "%{-Prefix}%"
+                        send "%{_pre}% <##44E0A2>%arg-4% &fhas been removed from your account." to arg-2
+                    else:
+                        send "&c! Please add a number you wish to remove to the player." to player
+            else:
+                send "&c! Please add a player you wish to send too." to player
+        
+        #█▀█ █▀▀ █░░ █▀█ ▄▀█ █▀▄
+        #█▀▄ ██▄ █▄▄ █▄█ █▀█ █▄▀
+        if arg-1 is "reload" or "Reload":
+            reload script "PlaceHolderManager.sk"
+            set {_pre} to coloured "%{-Prefix}%"
+            send "%{_pre}% &fYou have succesfully reload Place Holder Manager." to player
+
+
+
+#-----------------------------------------------------------------------------------------------#
+#████████╗░█████╗░██████╗░  ░█████╗░░█████╗░███╗░░░███╗██████╗░██╗░░░░░███████╗████████╗███████╗#
+#╚══██╔══╝██╔══██╗██╔══██╗  ██╔══██╗██╔══██╗████╗░████║██╔══██╗██║░░░░░██╔════╝╚══██╔══╝██╔════╝#
+#░░░██║░░░███████║██████╦╝  ██║░░╚═╝██║░░██║██╔████╔██║██████╔╝██║░░░░░█████╗░░░░░██║░░░█████╗░░#
+#░░░██║░░░██╔══██║██╔══██╗  ██║░░██╗██║░░██║██║╚██╔╝██║██╔═══╝░██║░░░░░██╔══╝░░░░░██║░░░██╔══╝░░#
+#░░░██║░░░██║░░██║██████╦╝  ╚█████╔╝╚█████╔╝██║░╚═╝░██║██║░░░░░███████╗███████╗░░░██║░░░███████╗#
+#░░░╚═╝░░░╚═╝░░╚═╝╚═════╝░  ░╚════╝░░╚════╝░╚═╝░░░░░╚═╝╚═╝░░░░░╚══════╝╚══════╝░░░╚═╝░░░╚══════╝#
+#-----------------------------------------------------------------------------------------------#
+on tab complete for "{@Main-Command}":
+    if event-player has permission "placeholdermanager.admin":
+        set tab completions for position 1 to "set", "add", "remove" and "reload"
+        set tab completions for position 3 to {-PlayerHoldersManager::*}
+
+
+#------------------------------------------------------------------------------------------------#
+#██████╗░██╗░░░░░░█████╗░░█████╗░███████╗██╗░░██╗░█████╗░██╗░░░░░██████╗░███████╗██████╗░░██████╗#
+#██╔══██╗██║░░░░░██╔══██╗██╔══██╗██╔════╝██║░░██║██╔══██╗██║░░░░░██╔══██╗██╔════╝██╔══██╗██╔════╝#
+#██████╔╝██║░░░░░███████║██║░░╚═╝█████╗░░███████║██║░░██║██║░░░░░██║░░██║█████╗░░██████╔╝╚█████╗░#
+#██╔═══╝░██║░░░░░██╔══██║██║░░██╗██╔══╝░░██╔══██║██║░░██║██║░░░░░██║░░██║██╔══╝░░██╔══██╗░╚═══██╗#
+#██║░░░░░███████╗██║░░██║╚█████╔╝███████╗██║░░██║╚█████╔╝███████╗██████╔╝███████╗██║░░██║██████╔╝#
+#╚═╝░░░░░╚══════╝╚═╝░░╚═╝░╚════╝░╚══════╝╚═╝░░╚═╝░╚════╝░╚══════╝╚═════╝░╚══════╝╚═╝░░╚═╝╚═════╝░#
+#------------------------------------------------------------------------------------------------#
+on placeholderapi placeholder request for the prefix "PlaceHolderManager":
+    loop {-PlayerHoldersManager::*}:
+        if the identifier is "Balance_%loop-value%":
+            set {_u} to player's uuid
+            set {_n} to yaml value "PlaceHolders.%loop-value%" of "plugins/PlaceHolderManager/PlayerData/%{_u}%.yml"
+            set {_bal} to {_n}
+            set the result to "%{_bal}%"
+
+#-------------------------------------------------------------------------------------------------------------------------------#  
+#░█████╗░░█████╗░███╗░░██╗███████╗██╗░██████╗░░░░░██╗██╗░░░██╗░█████╗░███╗░░░███╗██╗░░░░░░░░░██╗██╗░░░░░░█████╗░░█████╗░██████╗░#
+#██╔══██╗██╔══██╗████╗░██║██╔════╝██║██╔════╝░░░░██╔╝╚██╗░██╔╝██╔══██╗████╗░████║██║░░░░░░░░██╔╝██║░░░░░██╔══██╗██╔══██╗██╔══██╗#
+#██║░░╚═╝██║░░██║██╔██╗██║█████╗░░██║██║░░██╗░░░██╔╝░░╚████╔╝░███████║██╔████╔██║██║░░░░░░░██╔╝░██║░░░░░██║░░██║███████║██║░░██║#
+#██║░░██╗██║░░██║██║╚████║██╔══╝░░██║██║░░╚██╗░██╔╝░░░░╚██╔╝░░██╔══██║██║╚██╔╝██║██║░░░░░░██╔╝░░██║░░░░░██║░░██║██╔══██║██║░░██║#
+#╚█████╔╝╚█████╔╝██║░╚███║██║░░░░░██║╚██████╔╝██╔╝░░░░░░██║░░░██║░░██║██║░╚═╝░██║███████╗██╔╝░░░███████╗╚█████╔╝██║░░██║██████╔╝#
+#░╚════╝░░╚════╝░╚═╝░░╚══╝╚═╝░░░░░╚═╝░╚═════╝░╚═╝░░░░░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░░░░╚═╝╚══════╝╚═╝░░░░╚══════╝░╚════╝░╚═╝░░╚═╝╚═════╝░#
+#-------------------------------------------------------------------------------------------------------------------------------#
+on load:
+    suppress the variable save warnings
+    set {_at the top::*} to "██████╗░██╗░░░░░░█████╗░░█████╗░███████╗██╗░░██╗░█████╗░██╗░░░░░██████╗░███████╗██████╗░███╗░░░███╗░█████╗░███╗░░██╗░█████╗░░██████╗░####" and "██╔══██╗██║░░░░░██╔══██╗██╔══██╗██╔════╝██║░░██║██╔══██╗██║░░░░░██╔══██╗██╔════╝██╔══██╗████╗░████║██╔══██╗████╗░██║██╔══██╗██╔════╝░####" and "██████╔╝██║░░░░░███████║██║░░╚═╝█████╗░░███████║██║░░██║██║░░░░░██║░░██║█████╗░░██████╔╝██╔████╔██║███████║██╔██╗██║███████║██║░░██╗░####" and "██╔═══╝░██║░░░░░██╔══██║██║░░██╗██╔══╝░░██╔══██║██║░░██║██║░░░░░██║░░██║██╔══╝░░██╔══██╗██║╚██╔╝██║██╔══██║██║╚████║██╔══██║██║░░╚██╗####" and "██║░░░░░███████╗██║░░██║╚█████╔╝███████╗██║░░██║╚█████╔╝███████╗██████╔╝███████╗██║░░██║██║░╚═╝░██║██║░░██║██║░╚███║██║░░██║╚██████╔╝####" and "╚═╝░░░░░╚══════╝╚═╝░░╚═╝░╚════╝░╚══════╝╚═╝░░╚═╝░╚════╝░╚══════╝╚═════╝░╚══════╝╚═╝░░╚═╝╚═╝░░░░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝╚═╝░░╚═╝░╚═════╝░####" and "------------------------------------------------------------------------####" and "                             Author: MrErrors                           ####" and "                              Version: 1.0.1                            ####" and "                           Discord: LostPanda##7778                       ####" and "------------------------------------------------------------------------####"
+    if new File("plugins/PlaceHolderManager/Config.yml").exists() is false:
+        download file from "https://raw.githubusercontent.com/Mr-Errors/PlaceHolderManager/main/config.yml" and store it inside "plugins/PlaceHolderManager/Config.yml"
+        wait 2 ticks
+        load "plugins/PlaceHolderManager/Config.yml" as "plugins/PlaceHolderManager/Config.yml"
+        set the comments at the top of "plugins/PlaceHolderManager/Config.yml" to {_at the top::*}
+        save yaml "plugins/PlaceHolderManager/Config.yml"
+        message "<##44E0A2> &l● PlaceHolderManager &8&l➤ &7 Creating config.yml file!" to console
+    else:
+        message "<##44E0A2> &l● PlaceHolderManager &8&l➤ &7 Loading config.yml file!" to console
+        load "plugins/PlaceHolderManager/Config.yml" as "plugins/PlaceHolderManager/Config.yml"
+    wait 3 ticks
+    set {-PlayerHoldersManager::*} to all yaml nodes "Starting-Players-Currency" from "plugins/PlaceHolderManager/Config.yml" to console
+    set {-Prefix} to yaml value "prefix" from "plugins/PlaceHolderManager/Config.yml"
+
